@@ -5,4 +5,10 @@ const nextConfig: NextConfig = {
   reactStrictMode: true,
 };
 
+module.exports = {
+  images: {
+    domains: ["openweathermap.org"],
+  },
+};
+
 export default nextConfig;
