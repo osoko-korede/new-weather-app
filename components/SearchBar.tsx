@@ -2,9 +2,21 @@ import { useState } from "react";
 import axios from "axios";
 import Image from "next/image";
 
+// Define the Weather type
+interface Weather {
+  name: string;
+  main: {
+    temp: number;
+  };
+  weather: {
+    description: string;
+    icon: string;
+  }[];
+}
+
 export default function SearchBar() {
   const [city, setCity] = useState<string>("");
-  const [weather, setWeather] = useState<any>(null);
+  const [weather, setWeather] = useState<Weather | null>(null);
   const [loading, setLoading] = useState<boolean>(false);
   const [error, setError] = useState<string>("");
 
@@ -18,11 +30,11 @@ export default function SearchBar() {
     setLoading(true);
     setError(""); // Reset error on new search
     try {
-      const response = await axios.get(
+      const response = await axios.get<Weather>(
         `https://api.openweathermap.org/data/2.5/weather?q=${city}&appid=${process.env.NEXT_PUBLIC_OPENWEATHERMAP_API_KEY}&units=metric`
       );
       setWeather(response.data);
-    } catch (err) {
+    } catch {
       setError("City not found or invalid.");
     } finally {
       setLoading(false);
@@ -55,8 +67,8 @@ export default function SearchBar() {
     setLoading(true);
     setError(""); // Reset error on new search
     try {
-      const response = await axios.get(
-        `https://api.openweathermap.org/data/2.5/weather?lat=${lat}&lon=${lon}&appid=${apiKey}&units=metric`
+      const response = await axios.get<Weather>(
+        `https://api.openweathermap.org/data/2.5/weather?lat=${lat}&lon=${lon}&appid=${process.env.NEXT_PUBLIC_OPENWEATHERMAP_API_KEY}&units=metric`
       );
       setWeather(response.data);
     } catch (err) {
