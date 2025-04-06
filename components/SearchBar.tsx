@@ -45,19 +45,15 @@ export default function SearchBar() {
   const handleAutoDetectLocation = async () => {
     setAutoLocationLoading(true);
 
-    if (navigator.geolocation) {
-      navigator.geolocation.getCurrentPosition(
-        (position) => {
-          const { latitude, longitude } = position.coords;
-          fetchWeatherByCoordinates(latitude, longitude); // Fetch weather by coordinates
-        },
-        (error) => {
-          setError("Failed to get location. Please allow location access.");
-        }
-      );
-    } else {
-      setError("Geolocation is not supported by this browser.");
-    }
+    navigator.geolocation.getCurrentPosition(
+      (position) => {
+        const { latitude, longitude } = position.coords;
+        fetchWeatherByCoordinates(latitude, longitude);
+      },
+      () => {
+        setError("Failed to get location. Please allow location access.");
+      }
+    );
 
     setAutoLocationLoading(false);
   };
@@ -71,7 +67,7 @@ export default function SearchBar() {
         `https://api.openweathermap.org/data/2.5/weather?lat=${lat}&lon=${lon}&appid=${process.env.NEXT_PUBLIC_OPENWEATHERMAP_API_KEY}&units=metric`
       );
       setWeather(response.data);
-    } catch (err) {
+    } catch {
       setError("Failed to fetch weather data.");
     } finally {
       setLoading(false);
